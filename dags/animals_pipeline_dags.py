@@ -1,18 +1,30 @@
 from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
 from datetime import datetime
+import sys
+from pathlib import Path
 
-def my_task():
-    print("Hello from task!")
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+from scripts.telegram_alert import send_telegram_alert
+from scripts.extract import extract_function
+
+default_args = {
+    'owner': 'airflow',
+    'on_failure_callback': send_telegram_alert
+}
+
 
 with DAG(
-    dag_id="my_first_dag",
+    dag_id="animal_pipeline_dag",
     start_date=datetime(2024, 1, 1),
+    default_args=default_args,
     schedule=None,
     catchup=False
 ) as dag:
 
-    task1 = PythonOperator(
-        task_id="task_1",
-        python_callable=my_task
+    extract_task = PythonOperator(
+        task_id="extract",
+        python_callable=extract_function
     )
