@@ -6,7 +6,7 @@ An ETL pipeline built with **Apache Airflow**, **Python**, **MongoDB**, and **Re
 ## 📁 Project Structure
 
 ```
-COMMONANIMALBREEDSANDOUTCOMES/
+animal-shelter-etl-pipeline/
 ├── dags/
 │   └── animals_pipeline_dags.py
 ├── data/
