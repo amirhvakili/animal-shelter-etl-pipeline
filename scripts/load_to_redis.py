@@ -1,18 +1,15 @@
 import redis
-import sys
-from pathlib import Path
-
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
-
-from scripts.transform import transform_function
+from pymongo import MongoClient
 
 
 def load_to_redis():
+    r = redis.Redis(host= '192.168.64.1', port=6379, db=1, decode_responses=True)
+    client = MongoClient("mongodb://192.168.64.1:27017/")
+    db = client["my-database"]
+    collection = db["animal_shelter"]
 
-    r = redis.Redis(host= '192.168.64.1', port=6379, db=0, decode_responses=True)
-    records = transform_function()
+    avg_stay = list(collection.aggregate([{"$group" : {"_id": None, "avg_shelter_days": {"$avg": "$days_in_shelter"}}}]))[0]["avg_shelter_days"]
+    adopted = collection.count_documents({"outcome": "adopted"})
 
-    for i in range(len(records)):
-        r.delete(f"row_{i}")
-        r.hset(f"row_{i}", mapping=records[i])
+    r.set("avg_stay", avg_stay)
+    r.set("total_adoptions", adopted)

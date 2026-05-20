@@ -11,7 +11,7 @@ from scripts.telegram_alert import send_telegram_alert
 from scripts.extract import extract_function
 from scripts.transform import transform_function
 from scripts.load_to_redis import load_to_redis
-
+from scripts.load_to_mongo import load_to_mongodb
 
 with DAG(
     dag_id="animal_pipeline_dag",
@@ -29,9 +29,13 @@ with DAG(
         task_id="tranform",
         python_callable=transform_function,
     )
+    load_to_mongodb_task = PythonOperator(
+        task_id="load_to_mongodb",
+        python_callable=load_to_mongodb,
+    )
     load_to_redis_task = PythonOperator(
-        task_id="load",
+        task_id="load_to_redis",
         python_callable=load_to_redis,
     )
 
-extract_task >> tranform_task >> load_to_redis_task
+extract_task >> tranform_task >> load_to_mongodb_task >> load_to_redis_task
