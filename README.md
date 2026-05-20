@@ -97,7 +97,7 @@ airflow dags trigger animal_pipeline_dag
 
 ## 🗄️ MongoDB
 
-- **Host:** `192.168.64.1:27017`
+- **Host:** `http://localhost:27017`
 - **Database:** `my-database`
 - **Collection:** `animal_shelter`
 
@@ -107,7 +107,7 @@ Records are inserted after the transform step. Each document represents one anim
 
 ## ⚡ Redis
 
-- **Host:** `192.168.64.1:6379`
+- **Host:** `http://localhost:6379`
 - **DB:** `1`
 
 Two keys are cached after the MongoDB load:
